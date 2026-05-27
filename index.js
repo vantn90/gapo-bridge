@@ -93,8 +93,8 @@ app.post('/webhook', async (req, res) => {
 
   try {
     const body = req.body;
-    const senderId = body?.sender?.id ?? body?.user_id ?? body?.from?.id;
-    const text     = body?.message?.text ?? body?.text ?? body?.content;
+    const senderId = body?.from_user_id;
+    const text     = body?.message?.text;
 
     if (!senderId || !text) {
       console.log('Cannot parse senderId/text, skipping');
