@@ -5,7 +5,7 @@ services:
     ports:
       - "3001:3001"
     environment:
-      - GOCLAW_WS=ws://goclaw-goclaw-1:8080/ws
+      - GOCLAW_WS=ws://goclaw-goclaw-1:18790/ws
       - GOCLAW_TOKEN=${GOCLAW_TOKEN}
       - GOCLAW_AGENT_ID=${GOCLAW_AGENT_ID:-1}
       - GAPO_BOT_ID=${GAPO_BOT_ID}
