@@ -11,8 +11,8 @@ services:
       - GAPO_BOT_ID=${GAPO_BOT_ID}
       - GAPO_TOKEN=${GAPO_TOKEN}
     networks:
-      - goclaw_default
+      - goclaw-net
 
 networks:
-  goclaw_default:
+  goclaw-net:
     external: true
