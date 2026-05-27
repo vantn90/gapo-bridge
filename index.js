@@ -60,6 +60,7 @@ async function sendToGoClaw(userId, text) {
     const onMessage = (data) => {
       try {
         const msg = JSON.parse(data);
+        console.log('WS frame:', JSON.stringify(msg));
         if (msg.type === 'event' && msg.event === 'agent') {
           if (msg.payload.type === 'chunk' && msg.payload.text) {
             fullText += msg.payload.text;
