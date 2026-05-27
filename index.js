@@ -60,13 +60,13 @@ async function sendToGoClaw(userId, text) {
     const onMessage = (data) => {
       try {
         const msg = JSON.parse(data);
-        console.log('WS frame:', JSON.stringify(msg));
         if (msg.type === 'event' && msg.event === 'agent') {
-          if (msg.payload.type === 'chunk' && msg.payload.text) {
-            fullText += msg.payload.text;
-          } else if (msg.payload.type === 'run.completed') {
+          if (msg.payload.type === 'run.completed') {
             ws.removeListener('message', onMessage);
-            resolve(fullText);
+            resolve(msg.payload.payload?.content || fullText);
+          } else if (msg.payload.type === 'chunk') {
+            const chunk = msg.payload.payload?.content;
+            if (chunk) fullText += chunk;
           }
         }
       } catch (_) {}
@@ -81,11 +81,16 @@ async function sendToGoClaw(userId, text) {
 }
 
 async function sendToGapo(partnerId, text) {
-  await axios.post(
-    GAPO_BASE + '/actions/messages',
-    { partner_id: partnerId, message: { type: 'text', text } },
-    { headers: { 'Authorization': 'Bot ' + GAPO_BOT_ID + ':' + GAPO_TOKEN } }
-  );
+  try {
+    await axios.post(
+      GAPO_BASE + '/actions/messages',
+      { partner_id: String(partnerId), message: { type: 'text', text } },
+      { headers: { 'Authorization': 'Bot ' + GAPO_BOT_ID + ':' + GAPO_TOKEN } }
+    );
+  } catch (err) {
+    const detail = err.response ? JSON.stringify(err.response.data) : err.message;
+    throw new Error('GAPO API ' + (err.response?.status || '') + ': ' + detail);
+  }
 }
 
 app.post('/webhook', async (req, res) => {
